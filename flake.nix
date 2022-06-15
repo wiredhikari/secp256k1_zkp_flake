@@ -16,7 +16,7 @@
         };
 
         rustPkgs = pkgs.rustBuilder.makePackageSet {
-          rustChannel = "1.60.0";
+          rustChannel = "1.61.0";
           packageFun = import ./Cargo.nix;
 
           packageOverrides = pkgs: pkgs.rustBuilder.overrides.all ++ [
