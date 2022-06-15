@@ -4,7 +4,7 @@
 args@{
   release ? true,
   rootFeatures ? [
-    "secp256k1_zkp/default"
+    "hello/default"
   ],
   rustPackages,
   buildRustPackages,
@@ -37,13 +37,23 @@ in
 {
   cargo2nixVersion = "0.11.0";
   workspace = {
-    secp256k1_zkp = rustPackages.unknown.secp256k1_zkp."0.1.0";
+    hello = rustPackages.unknown.hello."0.1.0";
   };
   "registry+https://github.com/rust-lang/crates.io-index".cc."1.0.73" = overridableMkRustCrate (profileName: rec {
     name = "cc";
     version = "1.0.73";
     registry = "registry+https://github.com/rust-lang/crates.io-index";
     src = fetchCratesIo { inherit name version; sha256 = "2fff2a6927b3bb87f9595d67196a70493f627687a71d87a0d692242c33f58c11"; };
+  });
+  
+  "unknown".hello."0.1.0" = overridableMkRustCrate (profileName: rec {
+    name = "hello";
+    version = "0.1.0";
+    registry = "unknown";
+    src = fetchCrateLocal workspaceSrc;
+    dependencies = {
+      secp256k1_zkp = rustPackages."registry+https://github.com/rust-lang/crates.io-index".secp256k1-zkp."0.6.0" { inherit profileName; };
+    };
   });
   
   "registry+https://github.com/rust-lang/crates.io-index".secp256k1."0.22.1" = overridableMkRustCrate (profileName: rec {
@@ -102,16 +112,6 @@ in
     };
     buildDependencies = {
       cc = buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.0.73" { profileName = "__noProfile"; };
-    };
-  });
-  
-  "unknown".secp256k1_zkp."0.1.0" = overridableMkRustCrate (profileName: rec {
-    name = "secp256k1_zkp";
-    version = "0.1.0";
-    registry = "unknown";
-    src = fetchCrateLocal workspaceSrc;
-    dependencies = {
-      secp256k1_zkp = rustPackages."registry+https://github.com/rust-lang/crates.io-index".secp256k1-zkp."0.6.0" { inherit profileName; };
     };
   });
   

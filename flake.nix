@@ -2,9 +2,9 @@
   description = "secp256k1_zkp minimal project";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/release-21.11";
-    flake-utils.url = "github:numtide/flake-utils";
-    cargo2nix.url = "github:cargo2nix/cargo2nix";
+    flake-utils.follows = "cargo2nix/flake-utils";
+    nixpkgs.follows = "cargo2nix/nixpkgs";
+    cargo2nix.url = "github:cargo2nix/cargo2nix/release-0.11.0";
   };
 
   outputs = { self, nixpkgs, flake-utils, cargo2nix, ... }@inputs:
@@ -16,15 +16,15 @@
         };
 
         rustPkgs = pkgs.rustBuilder.makePackageSet {
-          rustChannel = "1.60.0";
+          rustChannel = "1.61.0";
           packageFun = import ./Cargo.nix;
 
           packageOverrides = pkgs: pkgs.rustBuilder.overrides.all ++ [
             (pkgs.rustBuilder.rustLib.makeOverride {
-              name = "alsa-sys";
+              name = "secp256k1-zkp-sys";
               overrideAttrs = drv: {
                 propagatedBuildInputs = drv.propagatedBuildInputs or [ ] ++ [
-                  pkgs.alsa-lib
+                  pkgs.secp256k1
                 ];
               };
             })
