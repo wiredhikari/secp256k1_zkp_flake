@@ -21,10 +21,10 @@
 
           packageOverrides = pkgs: pkgs.rustBuilder.overrides.all ++ [
             (pkgs.rustBuilder.rustLib.makeOverride {
-              name = "alsa-sys";
+              name = "secp256k1-zkp-sys";
               overrideAttrs = drv: {
                 propagatedBuildInputs = drv.propagatedBuildInputs or [ ] ++ [
-                  pkgs.alsa-lib
+                  pkgs.secp256k1
                 ];
               };
             })
